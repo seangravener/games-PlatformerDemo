@@ -1,4 +1,5 @@
 import Phaser from "phaser";
+import Hero from "../entities/Hero";
 
 // game object factory
 class Game extends Phaser.Scene {
@@ -23,8 +24,7 @@ class Game extends Phaser.Scene {
       repeat: -1,
     });
 
-    this.player = this.add.sprite(400, 300, "hero-run-sheet");
-    this.player.anims.play("hero-running");
+    this.hero = new Hero(this, 250, 160);
   }
 
   // game loop
