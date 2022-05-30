@@ -1,10 +1,9 @@
 import Phaser from "phaser";
-import { StateMachine } from "javascript-state-machine";
+import StateMachine from "javascript-state-machine";
 
 class Hero extends Phaser.GameObjects.Sprite {
   constructor(scene, x, y) {
     super(scene, x, y, "hero-run-sheet", 0);
-    // this.player = this.physics.add.sprite(250, 130, "hero-run-sheet");
 
     scene.add.existing(this);
     scene.physics.add.existing(this);
@@ -16,6 +15,7 @@ class Hero extends Phaser.GameObjects.Sprite {
     this.body.setDragX(750);
 
     this.keys = scene.cursorKeys;
+    this.input = {};
     this.setupMovement();
   }
 
@@ -40,20 +40,24 @@ class Hero extends Phaser.GameObjects.Sprite {
         onFlip: () => {
           this.body.setVelocityY(-300);
         },
+        onEnterState: (lifecycle) => {
+          console.log(lifecycle);
+        },
       },
     });
 
     this.movePredicates = {
-      jump: () => {},
-      flip: () => {},
-      fall: () => {},
-      touchdown: () => {},
+      jump: () => this.input.didPressJump,
+      flip: () => this.input.didPressJump,
+      fall: () => !this.body.onFloor(),
+      touchdown: () => this.body.onFloor(),
     };
   }
 
-  // Update animations
+  // Update sprite animations
   preUpdate(time, delta) {
     super.preUpdate(time, delta);
+    this.input.didPressJump = Phaser.Input.Keyboard.JustDown(this.keys.up);
 
     if (this.keys.left.isDown) {
       this.body.setAccelerationX(-1000);
@@ -62,51 +66,25 @@ class Hero extends Phaser.GameObjects.Sprite {
       // Adjust offset of collision rectangle:
       // [total width of Sprite] - [Width of collision rectangle] - [orig width of offset] = offset.x
       this.body.offset.x = 8;
-    }
-
-    // Right Key
-    else if (this.keys.right.isDown) {
+    } else if (this.keys.right.isDown) {
       this.body.setAccelerationX(1000);
       this.setFlipX(false);
-
-      // Reset collision offset
       this.body.offset.x = 12;
-    }
-
-    // No Key
-    else {
-      // this.body.setVelocityX(0);
+    } else {
       this.body.setAccelerationX(0);
     }
 
-    if (this.body.onFloor()) {
-      this.candDoubleJump = false;
-    }
-
-    if (this.body.velocity.y > 0) {
-      this.isJumping = false;
-    }
-
-    const didPressJump = Phaser.Input.Keyboard.JustDown(this.keys.up);
-    if (didPressJump) {
-      if (this.body.onFloor()) {
-        this.isJumping = true;
-        this.candDoubleJump = true;
-        this.body.setVelocityY(-400);
-      } else if (this.candDoubleJump) {
-        this.isJumping = true;
-        this.candDoubleJump = false;
-        this.body.setVelocityY(-300);
+    // Reduce jump velocity
+    if (this.moveState.is("jumping") || this.moveState.is("flipping")) {
+      if (!this.keys.up.isDown && this.body.velocity.y < -150) {
+        this.body.setVelocityY(-150);
       }
-    }
-
-    if (!this.keys.up.isDown && this.body.velocity.y < -150 && this.isJumping) {
-      this.body.velocity.y = -150;
     }
 
     for (const t of this.moveState.transitions()) {
       if (t in this.movePredicates && this.movePredicates[t]()) {
         this.moveState[t]();
+        break;
       }
     }
   }
