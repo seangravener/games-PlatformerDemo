@@ -7,7 +7,6 @@ class Hero extends Phaser.GameObjects.Sprite {
 
     scene.add.existing(this);
     scene.physics.add.existing(this);
-    // this.anims.play("hero-running");
 
     // set collision rectangle size and offset
     this.body.setCollideWorldBounds(true).setSize(12, 40).setOffset(12, 23);
