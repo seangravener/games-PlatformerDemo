@@ -17,6 +17,15 @@ class Game extends Phaser.Scene {
   }
 
   create(data) {
+    this.cursorKeys = this.input.keyboard.createCursorKeys();
+
+    this.space = this.input.keyboard.addKey(
+      Phaser.Input.Keyboard.KeyCodes.SPACE
+    );
+    this.space.on("up", () => {
+      console.log("Release Space");
+    });
+
     this.anims.create({
       key: "hero-running",
       frames: this.anims.generateFrameNumbers("hero-run-sheet"),
@@ -28,7 +37,11 @@ class Game extends Phaser.Scene {
   }
 
   // game loop
-  update(time, delta) {}
+  update(time, delta) {
+    if (this.cursorKeys.space.isDown) {
+      console.log("Holding Space");
+    }
+  }
 }
 
 export default Game;
