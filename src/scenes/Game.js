@@ -101,7 +101,7 @@ class Game extends Phaser.Scene {
     this.addMap();
     this.addHero();
     this.initMainCamera();
-    // this.addPlatforms();
+    this.addPlatforms();
   }
 
   addHero() {
@@ -148,6 +148,10 @@ class Game extends Phaser.Scene {
       this.map.heightInPixels
     );
     this.physics.world.setBoundsCollision(true, true, false, true);
+
+    // debug tilemaps
+    // const debugGraphics = this.add.graphics();
+    // groundLayer.renderDebug(debugGraphics);
   }
 
   // game loop
