@@ -11,6 +11,7 @@ class Game extends Phaser.Scene {
 
   preload() {
     this.load.tilemapTiledJSON("level-1", "assets/tiles/world-1-level-1.json");
+    // this.load.tilemapTiledJSON("level-1", "assets/tiles/level-0.json");
     this.load.image("world-1-sheet", "assets/tiles/world-1.png");
 
     this.load.spritesheet("hero-idle-sheet", "assets/hero/idle.png", {
@@ -98,9 +99,18 @@ class Game extends Phaser.Scene {
     });
 
     this.addMap();
-    this.hero = new Hero(this, 250, 160);
-    this.addPlatforms();
+    this.addHero();
     this.initMainCamera();
+    // this.addPlatforms();
+  }
+
+  addHero() {
+    this.hero = new Hero(this, 250, 160);
+
+    const groundCollider = this.physics.add.collider(
+      this.hero,
+      this.map.getLayer("Ground").tilemapLayer
+    );
   }
 
   initMainCamera() {
@@ -128,8 +138,8 @@ class Game extends Phaser.Scene {
   addMap() {
     this.map = this.make.tilemap({ key: "level-1" });
     const groundTiles = this.map.addTilesetImage("world-1", "world-1-sheet");
-
-    this.map.createStaticLayer("Ground", groundTiles);
+    const groundLayer = this.map.createStaticLayer("Ground", groundTiles);
+    groundLayer.setCollisionBetween(0, 32);
 
     this.physics.world.setBounds(
       0,
