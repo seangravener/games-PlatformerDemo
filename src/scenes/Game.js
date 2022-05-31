@@ -100,6 +100,16 @@ class Game extends Phaser.Scene {
     this.addMap();
     this.hero = new Hero(this, 250, 160);
     this.addPlatforms();
+    this.initMainCamera();
+  }
+
+  initMainCamera() {
+    const coords = [0, 0],
+      bounds = [this.map.widthInPixels, this.map.heightInPixels];
+
+    this.cameras.main.setBounds(...coords, ...bounds);
+    this.cameras.main.startFollow(this.hero);
+  }
 
   addPlatforms() {
     const platform = this.add.rectangle(220, 240, 300, 20, 0x4bcb7c);
