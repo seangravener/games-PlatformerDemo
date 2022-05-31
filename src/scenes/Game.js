@@ -1,8 +1,8 @@
-import Phaser from "phaser";
+import { Scene } from "phaser";
 import Hero from "../entities/Hero";
 
 // game object factory
-class Game extends Phaser.Scene {
+class Game extends Scene {
   constructor() {
     super({ key: "GameScene" });
   }
