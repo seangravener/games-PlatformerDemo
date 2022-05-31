@@ -10,6 +10,12 @@ class Game extends Phaser.Scene {
   init(data) {}
 
   preload() {
+    this.load.tilemapTiledJSON(
+      "level-1",
+      "assets/tiles/world-1-level-1.json"
+    );
+    this.load.image("world-1-sheet", "assets/tiles/world-1.png");
+
     this.load.spritesheet("hero-idle-sheet", "assets/hero/idle.png", {
       frameWidth: 32,
       frameHeight: 64,
@@ -19,18 +25,22 @@ class Game extends Phaser.Scene {
       frameWidth: 32,
       frameHeight: 64,
     });
+
     this.load.spritesheet("hero-pivot-sheet", "assets/hero/pivot.png", {
       frameWidth: 32,
       frameHeight: 64,
     });
+
     this.load.spritesheet("hero-jump-sheet", "assets/hero/jump.png", {
       frameWidth: 32,
       frameHeight: 64,
     });
+
     this.load.spritesheet("hero-flip-sheet", "assets/hero/spinjump.png", {
       frameWidth: 32,
       frameHeight: 64,
     });
+
     this.load.spritesheet("hero-fall-sheet", "assets/hero/fall.png", {
       frameWidth: 32,
       frameHeight: 64,
@@ -38,7 +48,6 @@ class Game extends Phaser.Scene {
   }
 
   create(data) {
-    console.log(this.textures.getTextureKeys());
     this.cursorKeys = this.input.keyboard.createCursorKeys();
 
     this.space = this.input.keyboard.addKey(
@@ -91,19 +100,27 @@ class Game extends Phaser.Scene {
       frames: this.anims.generateFrameNumbers("hero-die-sheet"),
     });
 
+    this.addMap();
     this.hero = new Hero(this, 250, 160);
 
-    const platform = this.add.rectangle(220, 240, 300, 20, 0x4bcb7c);
-    this.physics.add.existing(platform, true);
-    this.physics.add.collider(this.hero, platform);
+    // const platform = this.add.rectangle(220, 240, 300, 20, 0x4bcb7c);
+    // this.physics.add.existing(platform, true);
+    // this.physics.add.collider(this.hero, platform);
 
-    const platform2 = this.add.rectangle(220, 130, 160, 20, 0x4bcb7c);
-    this.physics.add.existing(platform2, true);
-    this.physics.add.collider(this.hero, platform2);
+    // const platform2 = this.add.rectangle(220, 130, 160, 20, 0x4bcb7c);
+    // this.physics.add.existing(platform2, true);
+    // this.physics.add.collider(this.hero, platform2);
 
-    const platform3 = this.add.rectangle(380, 180, 60, 20, 0x4bcb7c);
-    this.physics.add.existing(platform3, true);
-    this.physics.add.collider(this.hero, platform3);
+    // const platform3 = this.add.rectangle(380, 180, 60, 20, 0x4bcb7c);
+    // this.physics.add.existing(platform3, true);
+    // this.physics.add.collider(this.hero, platform3);
+  }
+
+  addMap() {
+    this.map = this.make.tilemap({ key: "level-1" });
+    const groundTiles = this.map.addTilesetImage("world-1", "world-1-sheet");
+
+    this.map.createStaticLayer("Ground", groundTiles);
   }
 
   // game loop
