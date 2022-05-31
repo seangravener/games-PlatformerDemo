@@ -10,8 +10,10 @@ class Game extends Phaser.Scene {
   init(data) {}
 
   preload() {
-    this.load.tilemapTiledJSON("level-1", "assets/tiles/world-1-level-1.json");
-    // this.load.tilemapTiledJSON("level-1", "assets/tiles/level-0.json");
+    this.load.tilemapTiledJSON("level-1", "assets/tiles/level-0.json");
+    // this.load.tilemapTiledJSON("level-1", "assets/tiles/level-1.json");
+    // this.load.tilemapTiledJSON("level-1", "assets/tiles/level-00.json");
+
     this.load.image("world-1-sheet", "assets/tiles/world-1.png");
 
     this.load.spritesheet("hero-idle-sheet", "assets/hero/idle.png", {
