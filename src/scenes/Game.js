@@ -99,18 +99,20 @@ class Game extends Phaser.Scene {
 
     this.addMap();
     this.hero = new Hero(this, 250, 160);
+    this.addPlatforms();
 
-    // const platform = this.add.rectangle(220, 240, 300, 20, 0x4bcb7c);
-    // this.physics.add.existing(platform, true);
-    // this.physics.add.collider(this.hero, platform);
+  addPlatforms() {
+    const platform = this.add.rectangle(220, 240, 300, 20, 0x4bcb7c);
+    this.physics.add.existing(platform, true);
+    this.physics.add.collider(this.hero, platform);
 
-    // const platform2 = this.add.rectangle(220, 130, 160, 20, 0x4bcb7c);
-    // this.physics.add.existing(platform2, true);
-    // this.physics.add.collider(this.hero, platform2);
+    const platform2 = this.add.rectangle(220, 130, 160, 20, 0x4bcb7c);
+    this.physics.add.existing(platform2, true);
+    this.physics.add.collider(this.hero, platform2);
 
-    // const platform3 = this.add.rectangle(380, 180, 60, 20, 0x4bcb7c);
-    // this.physics.add.existing(platform3, true);
-    // this.physics.add.collider(this.hero, platform3);
+    const platform3 = this.add.rectangle(380, 180, 60, 20, 0x4bcb7c);
+    this.physics.add.existing(platform3, true);
+    this.physics.add.collider(this.hero, platform3);
   }
 
   addMap() {
