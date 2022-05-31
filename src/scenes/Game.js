@@ -10,10 +10,7 @@ class Game extends Phaser.Scene {
   init(data) {}
 
   preload() {
-    this.load.tilemapTiledJSON(
-      "level-1",
-      "assets/tiles/world-1-level-1.json"
-    );
+    this.load.tilemapTiledJSON("level-1", "assets/tiles/world-1-level-1.json");
     this.load.image("world-1-sheet", "assets/tiles/world-1.png");
 
     this.load.spritesheet("hero-idle-sheet", "assets/hero/idle.png", {
@@ -121,6 +118,14 @@ class Game extends Phaser.Scene {
     const groundTiles = this.map.addTilesetImage("world-1", "world-1-sheet");
 
     this.map.createStaticLayer("Ground", groundTiles);
+
+    this.physics.world.setBounds(
+      0,
+      0,
+      this.map.widthInPixels,
+      this.map.heightInPixels
+    );
+    this.physics.world.setBoundsCollision(true, true, false, true);
   }
 
   // game loop
