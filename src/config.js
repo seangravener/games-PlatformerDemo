@@ -1,4 +1,5 @@
 import Phaser from "phaser";
+import { DialogPlugin } from "./scenes/DialogPlugin";
 
 export default {
   type: Phaser.AUTO,
@@ -22,5 +23,14 @@ export default {
       debugShowBody: true,
       debugShowStaticBody: true,
     },
+  },
+  plugins: {
+    scene: [
+      {
+        key: "DialogPlugin",
+        plugin: DialogPlugin,
+        mapping: "dialog",
+      },
+    ],
   },
 };
