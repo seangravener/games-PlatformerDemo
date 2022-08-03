@@ -1,4 +1,4 @@
-import { Scene } from "phaser";
+import Phaser, { Scene } from "phaser";
 import Hero from "../entities/hero";
 
 class GameScene extends Scene {
@@ -14,6 +14,18 @@ class GameScene extends Scene {
   }
 
   create() {
+    // Using Phaser input manager
+    this.input.keyboard.on("keydown-SPACE", () => {
+      console.log("space pressed");
+    });
+
+    this.space = this.input.keyboard.addKey(
+      Phaser.Input.Keyboard.KeyCodes.SPACE
+    );
+    this.space.on("up", () => {
+      console.log("released space");
+    });
+
     // Create animation
     this.anims.create({
       key: "hero-running",
@@ -27,7 +39,11 @@ class GameScene extends Scene {
     this.hero = new Hero(this, 250, 160);
   }
 
-  update(time, delta) {}
+  update(time, delta) {
+    if (this.space.isDown) {
+      console.log("holding space");
+    }
+  }
 }
 
 export default GameScene;
