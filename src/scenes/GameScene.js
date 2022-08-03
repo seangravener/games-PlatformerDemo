@@ -1,4 +1,5 @@
 import { Scene } from "phaser";
+import Hero from "../entities/hero";
 
 class GameScene extends Scene {
   constructor() {
@@ -23,15 +24,7 @@ class GameScene extends Scene {
       repeat: -1,
     });
 
-    // Create .player reference to sprite game object
-    this.player = this.add.sprite(400, 300, "hero-run_png");
-    this.player.anims.play("hero-running");
-
-    // Add sprite frame to scene
-    this.add.image(400, 400, "hero-run_png"); // as static frame
-    this.add.sprite(400, 400, "hero-run_png"); // as animation
-    this.add.sprite(424, 400, "hero-run_png", 2);
-    this.add.sprite(448, 400, "hero-run_png", 3);
+    this.hero = new Hero(this, 250, 160);
   }
 
   update(time, delta) {}
