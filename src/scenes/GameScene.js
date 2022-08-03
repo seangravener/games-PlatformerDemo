@@ -14,17 +14,8 @@ class GameScene extends Scene {
   }
 
   create() {
-    // Using Phaser input manager
-    this.input.keyboard.on("keydown-SPACE", () => {
-      console.log("space pressed");
-    });
-
-    this.space = this.input.keyboard.addKey(
-      Phaser.Input.Keyboard.KeyCodes.SPACE
-    );
-    this.space.on("up", () => {
-      console.log("released space");
-    });
+    this.createCursorKeys();
+    this.createCustomKeys();
 
     // Create animation
     this.anims.create({
@@ -39,10 +30,33 @@ class GameScene extends Scene {
     this.hero = new Hero(this, 250, 160);
   }
 
+  createCursorKeys() {
+    this.cursorKeys = this.input.keyboard.createCursorKeys();
+  }
+
+  createCustomKeys() {
+    // Using Phaser input manager
+    this.input.keyboard.on("keydown-SPACE", () => {
+      console.log("space pressed");
+    });
+
+    this.space = this.input.keyboard.addKey(
+      Phaser.Input.Keyboard.KeyCodes.SPACE
+    );
+
+    this.space.on("up", () => {
+      console.log("released space");
+    });
+  }
+
   update(time, delta) {
-    if (this.space.isDown) {
+    if (this.cursorKeys.space.isDown) {
       console.log("holding space");
     }
+
+    // if (this.space.isDown) {
+    //   console.log("holding space");
+    // }
   }
 }
 
