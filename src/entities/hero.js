@@ -35,8 +35,12 @@ class Hero extends GameObjects.Sprite {
 
     if (this.keys.left.isDown) {
       this.body.setVelocityX(vel.left);
+      this.setFlipX(true);
+      this.body.offset.x = 8;
     } else if (this.keys.right.isDown) {
       this.body.setVelocityX(vel.right);
+      this.setFlipX(false);
+      this.body.offset.x = 12;
     } else {
       this.body.setVelocityX(0);
     }
