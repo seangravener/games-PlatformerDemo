@@ -23,19 +23,20 @@ class GameScene extends Scene {
 
       // generates array of frames; can be config'd per frame
       frames: this.anims.generateFrameNumbers("hero-run_png"),
-      frameRate: 10, // every 10th of second (10 miliseconds)
+      frameRate: 10, // every 10th of second (10 milliseconds)
       repeat: -1,
     });
 
     this.hero = new Hero(this, 250, 160);
   }
 
+  // eg. use predefined keys
   createCursorKeys() {
     this.cursorKeys = this.input.keyboard.createCursorKeys();
   }
-
+  // eg. create custom keys
   createCustomKeys() {
-    // Using Phaser input manager
+    // Phaser input manager (for events)
     this.input.keyboard.on("keydown-SPACE", () => {
       console.log("space pressed");
     });
@@ -50,13 +51,15 @@ class GameScene extends Scene {
   }
 
   update(time, delta) {
+    // Predefined key
     if (this.cursorKeys.space.isDown) {
-      console.log("holding space");
+      // console.log("holding space");
     }
 
-    // if (this.space.isDown) {
-    //   console.log("holding space");
-    // }
+    // custom key
+    if (this.space.isDown) {
+      // console.log("holding space");
+    }
   }
 }
 
