@@ -12,6 +12,7 @@ const _velocity = {
   decelRate: 150,
   max: { x: baseUnit, y: baseUnit * 2 },
 };
+
 class Hero extends GameObjects.Sprite {
   constructor(scene, x, y) {
     super(scene, x, y, "hero-run_png");
@@ -32,7 +33,7 @@ class Hero extends GameObjects.Sprite {
     // Set this sprite-body to interact with other objects
     this.body.setCollideWorldBounds(true);
 
-    // Center this sprite-body collision boundery with offsets
+    // Center this sprite-body collision boundary with offsets
     this.body.setSize(12, 40); // w, h
     this.body.setOffset(12, 23);
 
@@ -40,6 +41,8 @@ class Hero extends GameObjects.Sprite {
     const { drag, max } = _velocity;
     this.body.setMaxVelocity(max.x, max.y);
     this.body.setDragX(drag);
+
+    this.canDoubleJump = false;
   }
 
   initScene() {
@@ -57,7 +60,7 @@ class Hero extends GameObjects.Sprite {
     if (this.cursorKeys.left.isDown) {
       // this.body.setVelocityX(_velocity.left);
       this.body.setAccelerationX(-_velocity.accelRate);
-      this.body.offset.x = 8; // Center collision boundry with offset
+      this.body.offset.x = 8; // Center collision boundary with offset
       this.setFlipX(true);
     }
 
@@ -65,7 +68,7 @@ class Hero extends GameObjects.Sprite {
     else if (this.cursorKeys.right.isDown) {
       // this.body.setVelocityX(_velocity.right);
       this.body.setAccelerationX(_velocity.accelRate);
-      this.body.offset.x = 12; // Center collision boundry with offset
+      this.body.offset.x = 12; // Center collision boundary with offset
       this.setFlipX(false);
     }
 
@@ -81,23 +84,36 @@ class Hero extends GameObjects.Sprite {
       this.cursorKeys.space,
     ];
 
-    const isJumping = up.isDown || space.isDown;
+    const isJumping = up.isDown || space.isDown || velocityY > 0;
     const didPressJump =
       Input.Keyboard.JustDown(this.cursorKeys.up) ||
       Input.Keyboard.JustDown(this.cursorKeys.space);
 
-    // Method 1: Produces bounce effect if key is held down
+    // Method 1: Bounce effect if key is held down
     // if (isJumping && onFloor) {
     //   this.body.setVelocityY(-_velocity.jump);
     // }
 
-    // Method 2: Produces one jump per press (while onFloor)
-    if (didPressJump && this.body.onFloor()) {
-      this.body.setVelocityY(-_velocity.jump);
+    // Method 2: One jump per jump
+    // if (didPressJump && onFloor) {
+    //   this.body.setVelocityY(-_velocity.jump);
+    // }
+
+    // Method 3: Double jump
+    if (didPressJump) {
+      if (onFloor) {
+        this.canDoubleJump = true;
+        this.body.setVelocityY(-_velocity.jump);
+      } else if (this.canDoubleJump) {
+        this.canDoubleJump = false;
+        this.body.setVelocityY(-_velocity.jump - 100);
+      } else if (!onFloor) {
+        this.canDoubleJump = false;
+      }
     }
 
     // # Deceleration
-    // When jump is pressed and released before velocityY reaches 
+    // When jump is pressed and released before velocityY reaches
     // its max (a negative value), reset velocityY to decelerate jumping
     if (!isJumping && velocityY < -_velocity.decelRate) {
       this.body.setVelocityY(-_velocity.decelRate);
