@@ -1,4 +1,5 @@
 import { GameObjects, Input } from "phaser";
+import StateMachine from "javascript-state-machine";
 
 const baseUnit = 250;
 const _velocity = {
@@ -27,6 +28,7 @@ class Hero extends GameObjects.Sprite {
     this.initScene();
     this.initPhysicsBody();
     this.initCursorKeys();
+    this.setupMovement();
   }
 
   initPhysicsBody() {
@@ -52,6 +54,39 @@ class Hero extends GameObjects.Sprite {
 
   initCursorKeys() {
     this.cursorKeys = this.scene.cursorKeys;
+  }
+
+  setupMovement() {
+    this.moveState = new StateMachine({
+      init: "standing",
+      transitions: [
+        { name: "jump", from: "standing", to: "jumping" },
+        { name: "flip", from: "jumping", to: "flipping" },
+        { name: "fall", from: "standing", to: "falling" },
+        {
+          name: "touchdown",
+          from: ["standing", "flipping", "falling"],
+          to: "standing",
+        },
+      ],
+
+      methods: {
+        onJump: () => {
+          this.body.setVelocityY(-_velocity.jump);
+        },
+        onFlip: () => {
+          this.body.setVelocity(-300);
+        },
+      },
+    });
+
+    // should transition? which are valid? (returns boolean)
+    this.movePredicates = {
+      jump: () => {},
+      flip: () => {},
+      fall: () => {},
+      touchdown: () => {},
+    };
   }
 
   preUpdate(...args) {
