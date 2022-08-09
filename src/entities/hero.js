@@ -20,6 +20,7 @@ class Hero extends GameObjects.Sprite {
     this.init(scene);
 
     this.anims.play("hero-running");
+    this.input = {};
   }
 
   init(scene) {
@@ -80,13 +81,15 @@ class Hero extends GameObjects.Sprite {
       },
     });
 
-    // should transition? which are valid? (returns boolean)
+    // In what condition(s) can transition be made?
     this.movePredicates = {
-      jump: () => {},
-      flip: () => {},
-      fall: () => {},
-      touchdown: () => {},
+      jump: () => this.input.didPressJump,
+      flip: () => this.input.didPressJump,
+      fall: () => !this.body.onFloor(),
+      touchdown: () => this.body.onFloor(),
     };
+
+    console.log(this.moveState.transitions());
   }
 
   preUpdate(...args) {
@@ -120,7 +123,7 @@ class Hero extends GameObjects.Sprite {
     ];
 
     const isJumping = up.isDown || space.isDown || velocityY > 0;
-    const didPressJump =
+    this.input.didPressJump =
       Input.Keyboard.JustDown(this.cursorKeys.up) ||
       Input.Keyboard.JustDown(this.cursorKeys.space);
 
@@ -135,23 +138,31 @@ class Hero extends GameObjects.Sprite {
     // }
 
     // Method 3: Double jump
-    if (didPressJump) {
-      if (onFloor) {
-        this.canDoubleJump = true;
-        this.body.setVelocityY(-_velocity.jump);
-      } else if (this.canDoubleJump) {
-        this.canDoubleJump = false;
-        this.body.setVelocityY(-_velocity.jump - 100);
-      } else if (!onFloor) {
-        this.canDoubleJump = false;
-      }
-    }
+    // if (this.input.didPressJump) {
+    //   if (onFloor) {
+    //     this.canDoubleJump = true;
+    //     this.body.setVelocityY(-_velocity.jump);
+    //   } else if (this.canDoubleJump) {
+    //     this.canDoubleJump = false;
+    //     this.body.setVelocityY(-_velocity.jump - 100);
+    //   } else if (!onFloor) {
+    //     this.canDoubleJump = false;
+    //   }
+    // }
 
     // # Deceleration
     // When jump is pressed and released before velocityY reaches
     // its max (a negative value), reset velocityY to decelerate jumping
-    if (!isJumping && velocityY < -_velocity.decelRate) {
-      this.body.setVelocityY(-_velocity.decelRate);
+    if (this.moveState.is("jumping") || this.moveState.is("flipping"))
+      if (!isJumping && velocityY < -_velocity.decelRate) {
+        this.body.setVelocityY(-_velocity.decelRate);
+      }
+    // Ask state machine which transition are currently valid, loop through them
+    for (const t of this.moveState.transitions() && this.movePredicates[t]()) {
+      console.log(t);
+      // eg. this.moveState.jump()
+      this.moveState[t]();
+      break;
     }
   }
 }
